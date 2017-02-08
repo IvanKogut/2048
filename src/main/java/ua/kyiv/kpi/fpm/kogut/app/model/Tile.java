@@ -7,7 +7,7 @@ import java.awt.*;
  */
 public class Tile {
 
-    private int value;
+    int value;
 
     public Tile() {
         this.value = 0;
