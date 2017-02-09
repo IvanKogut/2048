@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Model {
 
+    public static final int TILE_LENGTH = 50;
     private static final int FIELD_WIDTH = 4;
 
     private Tile[][] gameTiles;
@@ -16,6 +17,18 @@ public class Model {
 
     public Model() {
         resetGameTiles();
+    }
+
+    public Tile[][] getGameTiles() {
+        return gameTiles;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getMaxTile() {
+        return maxTile;
     }
 
     private void addTile() {
@@ -52,6 +65,13 @@ public class Model {
 
         addTile();
         addTile();
+
+//        this.gameTiles = new Tile[][] {
+//                {new Tile(2), new Tile(2), new Tile(4), new Tile(8)},
+//                {new Tile(4), new Tile(2), new Tile(), new Tile()},
+//                {new Tile(2), new Tile(), new Tile(), new Tile()},
+//                {new Tile(2), new Tile(), new Tile(), new Tile()}
+//        };
     }
 
     public void left() {
@@ -60,7 +80,7 @@ public class Model {
             boolean isChangedByCompress = compressTiles(tiles);
             boolean isChangedByMerge = mergeTiles(tiles);
 
-            if ((isChangedByCompress && isChangedByMerge) & !needAddTile) {
+            if ((isChangedByCompress || isChangedByMerge) & !needAddTile) {
                 needAddTile = true;
             }
         }

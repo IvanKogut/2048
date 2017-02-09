@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Created by Admin on 08.02.2017.
  */
-public class Tile {
+public class Tile implements Drawable{
 
     int value;
 
@@ -15,6 +15,10 @@ public class Tile {
 
     public Tile(int value) {
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public boolean isEmpty() {
@@ -58,5 +62,17 @@ public class Tile {
             default:
                 return new Color(0xff0000);
         }
+    }
+
+    @Override
+    public void draw(Graphics g, int leftUpperCornerX, int leftUpperCornerY) {
+        g.setColor(getTileColor());
+
+        g.drawRect(leftUpperCornerX, leftUpperCornerY, 50, 50);
+        g.fillRect(leftUpperCornerX, leftUpperCornerY, 50, 50);
+
+        g.setColor(getFontColor());
+        String value = isEmpty() ? "" : "" + getValue();
+        g.drawString(value, leftUpperCornerX + 25, leftUpperCornerY + 25);
     }
 }
