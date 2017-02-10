@@ -1,7 +1,6 @@
 package ua.kyiv.kpi.fpm.kogut.app.controller;
 
 import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
-import ua.kyiv.kpi.fpm.kogut.app.model.EventListener;
 import ua.kyiv.kpi.fpm.kogut.app.model.Model;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 import ua.kyiv.kpi.fpm.kogut.app.view.View;
@@ -37,8 +36,18 @@ public class Controller implements EventListener {
     @Override
     public void move(Direction direction) {
         switch (direction) {
+            case UP:
+                model.up();
+                break;
+            case RIGHT:
+                model.right();
+                break;
+            case DOWN:
+                model.down();
+                break;
             case LEFT:
                 model.left();
+                break;
         }
 
         view.update();

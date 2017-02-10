@@ -34,17 +34,16 @@ public class Model {
     private void addTile() {
         List<Tile> emptyTiles = getEmptyTiles();
         Tile randomEmptyTile = emptyTiles.get((int) (emptyTiles.size() * Math.random()));
-        int newValue = Math.random() < 0.9 ? 2 : 4;
-        randomEmptyTile.value = newValue;
+        randomEmptyTile.value = Math.random() < 0.9 ? 2 : 4;
     }
 
     private List<Tile> getEmptyTiles() {
         List<Tile> tiles = new ArrayList<>();
 
-        for (int i = 0; i < gameTiles.length; i++) {
-            for (int j = 0; j < gameTiles[i].length; j++) {
-                if (gameTiles[i][j].isEmpty()) {
-                    tiles.add(gameTiles[i][j]);
+        for (Tile[] tilesRow : gameTiles) {
+            for (Tile tile : tilesRow) {
+                if (tile.isEmpty()) {
+                    tiles.add(tile);
                 }
             }
         }
@@ -52,7 +51,7 @@ public class Model {
         return tiles;
     }
 
-    public void resetGameTiles() {
+    private void resetGameTiles() {
         this.gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
         this.score = 0;
         this.maxTile = 2;
@@ -65,13 +64,14 @@ public class Model {
 
         addTile();
         addTile();
-
+//
 //        this.gameTiles = new Tile[][] {
-//                {new Tile(2), new Tile(2), new Tile(4), new Tile(8)},
-//                {new Tile(4), new Tile(2), new Tile(), new Tile()},
-//                {new Tile(2), new Tile(), new Tile(), new Tile()},
-//                {new Tile(2), new Tile(), new Tile(), new Tile()}
+//                {new Tile(2), new Tile(), new Tile(2), new Tile(4)},
+//                {new Tile(), new Tile(2), new Tile(), new Tile()},
+//                {new Tile(), new Tile(), new Tile(), new Tile()},
+//                {new Tile(), new Tile(), new Tile(16), new Tile()}
 //        };
+
     }
 
     public void left() {
@@ -87,6 +87,31 @@ public class Model {
 
         if (needAddTile) {
             addTile();
+        }
+    }
+
+    public void up() {
+        rotateBy90Anticlockwise(1);
+        left();
+        rotateBy90Anticlockwise(3);
+    }
+
+    public void right() {
+        rotateBy90Anticlockwise(2);
+        left();
+        rotateBy90Anticlockwise(2);
+    }
+
+    public void down() {
+        rotateBy90Anticlockwise(3);
+        left();
+        rotateBy90Anticlockwise(1);
+    }
+
+    private void rotateBy90Anticlockwise(int times) {
+        for (int i = 0; i < times; i++) {
+            transposeTiles();
+            reverseRows();
         }
     }
 
@@ -107,6 +132,24 @@ public class Model {
         }
 
         return changedPlayingField;
+    }
+
+    private void transposeTiles() {
+        for(int i = 0; i < gameTiles.length; i++) {
+            for(int j = i+1; j < gameTiles[i].length; j++) {
+                Tile temp = gameTiles[i][j];
+                gameTiles[i][j] = gameTiles[j][i];
+                gameTiles[j][i] = temp;
+            }
+        }
+    }
+
+    private void reverseRows() {
+        for(int i = 0; i < gameTiles.length / 2; i++) {
+            Tile[] temp = gameTiles[i];
+            gameTiles[i] = gameTiles[gameTiles.length - i - 1];
+            gameTiles[gameTiles.length - i - 1] = temp;
+        }
     }
 
     private boolean mergeTiles(Tile[] tiles) {

@@ -1,7 +1,7 @@
 package ua.kyiv.kpi.fpm.kogut.app.view;
 
 import ua.kyiv.kpi.fpm.kogut.app.controller.Controller;
-import ua.kyiv.kpi.fpm.kogut.app.model.EventListener;
+import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 
 import javax.swing.*;

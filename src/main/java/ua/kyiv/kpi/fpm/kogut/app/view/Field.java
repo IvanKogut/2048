@@ -1,7 +1,7 @@
 package ua.kyiv.kpi.fpm.kogut.app.view;
 
 import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
-import ua.kyiv.kpi.fpm.kogut.app.model.EventListener;
+import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
 import ua.kyiv.kpi.fpm.kogut.app.model.Model;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 
@@ -68,6 +68,8 @@ public class Field extends JPanel {
 
         x = 0;
         y += Model.TILE_LENGTH;
+
+        g.setColor(Color.BLACK);
         g.drawString(String.format("Score: %d, High: %d", view.getScore(), view.getMaxTile()), x, y);
     }
 
