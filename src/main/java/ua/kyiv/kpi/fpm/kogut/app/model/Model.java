@@ -1,5 +1,8 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +14,23 @@ public class Model {
     public static final int TILE_LENGTH = 50;
     private static final int FIELD_WIDTH = 4;
 
+    //TODO: Create file in the file system and check existing if not create otherwise use
+    private static Path defaultPathToRecordedGameState;
+
+    static {
+        try {
+            defaultPathToRecordedGameState = Files.createTempFile("tmp", null);  // tmp.tmp
+        } catch (IOException e) {
+            System.exit(0);
+        }
+    }
+
     private Tile[][] gameTiles;
     private int score;
     private int maxTile;
 
     public Model() {
+
         resetGameTiles();
     }
 
@@ -173,5 +188,32 @@ public class Model {
         }
 
         return changedPlayingField;
+    }
+
+    public void saveTiles() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState.toFile());
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+
+            objectOutputStream.writeObject(gameTiles);
+            objectOutputStream.writeInt(score);
+            objectOutputStream.writeInt(maxTile);
+            objectOutputStream.flush();
+
+        } catch (IOException e) {
+            System.exit(0);
+        }
+    }
+
+    public void loadTiles() {
+        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState.toFile());
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+            gameTiles = (Tile[][]) objectInputStream.readObject();
+            score = objectInputStream.readInt();
+            maxTile = objectInputStream.readInt();
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.exit(0);
+        }
     }
 }

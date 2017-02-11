@@ -23,6 +23,7 @@ public class View extends JFrame {
         add(field);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         setSize(500, 500);
         setLocationRelativeTo(null);
         setTitle("2048");

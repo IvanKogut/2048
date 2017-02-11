@@ -32,6 +32,12 @@ public class Field extends JPanel {
                 case KeyEvent.VK_DOWN:
                     eventListener.move(Direction.DOWN);
                     break;
+                case KeyEvent.VK_S:
+                    eventListener.saveGame();
+                    break;
+                case KeyEvent.VK_L:
+                    eventListener.loadGame();
+                    break;
             }
         }
     }

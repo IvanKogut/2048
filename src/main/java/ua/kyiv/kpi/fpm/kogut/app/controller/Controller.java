@@ -52,4 +52,15 @@ public class Controller implements EventListener {
 
         view.update();
     }
+
+    @Override
+    public void saveGame() {
+        model.saveTiles();
+    }
+
+    @Override
+    public void loadGame() {
+        model.loadTiles();
+        view.update();
+    }
 }

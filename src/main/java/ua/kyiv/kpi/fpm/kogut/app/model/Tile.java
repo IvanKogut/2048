@@ -1,11 +1,12 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Created by Admin on 08.02.2017.
  */
-public class Tile implements Drawable{
+public class Tile implements Drawable, Serializable {
 
     int value;
 
@@ -68,11 +69,11 @@ public class Tile implements Drawable{
     public void draw(Graphics g, int leftUpperCornerX, int leftUpperCornerY) {
         g.setColor(getTileColor());
 
-        g.drawRect(leftUpperCornerX, leftUpperCornerY, 50, 50);
-        g.fillRect(leftUpperCornerX, leftUpperCornerY, 50, 50);
+        g.drawRect(leftUpperCornerX, leftUpperCornerY, Model.TILE_LENGTH, Model.TILE_LENGTH);
+        g.fillRect(leftUpperCornerX, leftUpperCornerY, Model.TILE_LENGTH, Model.TILE_LENGTH);
 
         g.setColor(getFontColor());
         String value = isEmpty() ? "" : "" + getValue();
-        g.drawString(value, leftUpperCornerX + 25, leftUpperCornerY + 25);
+        g.drawString(value, leftUpperCornerX + Model.TILE_LENGTH / 2, leftUpperCornerY + Model.TILE_LENGTH / 2);
     }
 }
