@@ -36,7 +36,7 @@ public class Controller implements EventListener {
     }
 
     @Override
-    public void move(Direction direction) {
+    public void onMove(Direction direction) {
         switch (direction) {
             case UP:
                 model.up();
@@ -56,30 +56,30 @@ public class Controller implements EventListener {
     }
 
     @Override
-    public void save() {
+    public void onSave() {
         model.saveTiles();
         view.update();
     }
 
     @Override
-    public void load() {
+    public void onLoad() {
         model.loadTiles();
         view.update();
     }
 
     @Override
-    public void restart() {
+    public void onRestart() {
         model.restart();
         view.update();
     }
 
     @Override
-    public void lose() {
+    public void onLose() {
         view.showMessageDialogOnLose();
     }
 
     @Override
-    public void win() {
+    public void onWin() {
         view.showMessageDialogOnWin();
     }
 

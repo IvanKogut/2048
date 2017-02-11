@@ -61,8 +61,8 @@ public class View extends JFrame {
             update();
             JOptionPane.showMessageDialog(
                     this,
-                    "Congratulation",
                     "You are win!!!",
+                    "Congratulation",
                     JOptionPane.INFORMATION_MESSAGE);
         });
     }
@@ -72,8 +72,8 @@ public class View extends JFrame {
             update();
             JOptionPane.showMessageDialog(
                     this,
-                    "Oops",
                     "Try again...",
+                    "Oops",
                     JOptionPane.INFORMATION_MESSAGE);
         });
     }

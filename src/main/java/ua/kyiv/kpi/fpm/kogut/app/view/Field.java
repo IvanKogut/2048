@@ -21,25 +21,25 @@ public class Field extends JPanel {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    eventListener.move(Direction.LEFT);
+                    eventListener.onMove(Direction.LEFT);
                     break;
                 case KeyEvent.VK_RIGHT:
-                    eventListener.move(Direction.RIGHT);
+                    eventListener.onMove(Direction.RIGHT);
                     break;
                 case KeyEvent.VK_UP:
-                    eventListener.move(Direction.UP);
+                    eventListener.onMove(Direction.UP);
                     break;
                 case KeyEvent.VK_DOWN:
-                    eventListener.move(Direction.DOWN);
+                    eventListener.onMove(Direction.DOWN);
                     break;
                 case KeyEvent.VK_S:
-                    eventListener.save();
+                    eventListener.onSave();
                     break;
                 case KeyEvent.VK_L:
-                    eventListener.load();
+                    eventListener.onLoad();
                     break;
                 case KeyEvent.VK_R:
-                    eventListener.restart();
+                    eventListener.onRestart();
                     break;
             }
         }

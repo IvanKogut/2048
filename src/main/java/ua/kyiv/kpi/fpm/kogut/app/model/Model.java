@@ -28,6 +28,7 @@ public class Model {
     }
 
     private EventListener eventListener;
+    private boolean isNotWin = true;
 
     private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
     private int score;
@@ -57,6 +58,97 @@ public class Model {
 
     public void setEventListener(EventListener eventListener) {
         this.eventListener = eventListener;
+    }
+
+    public void left() {
+        message = "";
+
+        boolean needAddTile = false;
+
+        for (Tile[] tiles : gameTiles) {
+            boolean isChangedByCompress = compressTiles(tiles);
+            boolean isChangedByMerge = mergeTiles(tiles);
+
+            if ((isChangedByCompress || isChangedByMerge) & !needAddTile) {
+                needAddTile = true;
+            }
+        }
+
+
+        if (needAddTile) {
+            addTile();
+        }
+
+        if (maxTile == 2048 && isNotWin) {
+            eventListener.onWin();
+            isNotWin = false;
+        }
+
+        if (getEmptyTiles().size() == 0) {
+            checkCompletion();
+        }
+    }
+
+    public void up() {
+        rotateBy90Anticlockwise(1);
+        left();
+        rotateBy90Anticlockwise(3);
+    }
+
+    public void right() {
+        rotateBy90Anticlockwise(2);
+        left();
+        rotateBy90Anticlockwise(2);
+    }
+
+    public void down() {
+        rotateBy90Anticlockwise(3);
+        left();
+        rotateBy90Anticlockwise(1);
+    }
+
+    public void saveTiles() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+
+            objectOutputStream.writeObject(gameTiles);
+            objectOutputStream.writeInt(score);
+            objectOutputStream.writeInt(maxTile);
+            objectOutputStream.flush();
+
+            message = "Game is saved!";
+
+        } catch (IOException e) {
+
+            message = "Error during saving game...";
+        }
+    }
+
+    public void loadTiles() {
+
+        if (isEmpty()) {
+            message = "There is not saved game...";
+            return;
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+            gameTiles = (Tile[][]) objectInputStream.readObject();
+            score = objectInputStream.readInt();
+            maxTile = objectInputStream.readInt();
+
+            message = "Game is loaded!";
+
+        } catch (IOException | ClassNotFoundException e) {
+
+            message = "Error during loading game...";
+        }
+    }
+
+    public void restart() {
+        resetGameTiles();
+        message = "Game is restarted!";
     }
 
     private void addTile() {
@@ -93,43 +185,10 @@ public class Model {
         addTile();
     }
 
-    public void restart() {
-        resetGameTiles();
-        message = "Game is restarted!";
-    }
-
-    public void left() {
-        message = "";
-
-        boolean needAddTile = false;
-
-        for (Tile[] tiles : gameTiles) {
-            boolean isChangedByCompress = compressTiles(tiles);
-            boolean isChangedByMerge = mergeTiles(tiles);
-
-            if ((isChangedByCompress || isChangedByMerge) & !needAddTile) {
-                needAddTile = true;
-            }
-        }
-
-
-        if (needAddTile) {
-            addTile();
-        }
-
-        if (maxTile == 2048) {
-            eventListener.win();
-        }
-
-        if (getEmptyTiles().size() == 0) {
-            checkCompletion();
-        }
-    }
-
     private void checkCompletion() {
             // (1,3) - UP; (2,2) - RIGHT; (3, 1) - DOWN; (0,0) - LEFT
         if (!checkMoveSide(1, 3) && !checkMoveSide(2, 2) && !checkMoveSide(3, 1) && !checkMoveSide(0, 0)) {
-            eventListener.lose();
+            eventListener.onLose();
         }
     }
 
@@ -156,24 +215,6 @@ public class Model {
         }
 
         return tiles;
-    }
-
-    public void up() {
-        rotateBy90Anticlockwise(1);
-        left();
-        rotateBy90Anticlockwise(3);
-    }
-
-    public void right() {
-        rotateBy90Anticlockwise(2);
-        left();
-        rotateBy90Anticlockwise(2);
-    }
-
-    public void down() {
-        rotateBy90Anticlockwise(3);
-        left();
-        rotateBy90Anticlockwise(1);
     }
 
     private void rotateBy90Anticlockwise(int times) {
@@ -243,62 +284,7 @@ public class Model {
         return changedPlayingField;
     }
 
-    public void saveTiles() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-
-            objectOutputStream.writeObject(gameTiles);
-            objectOutputStream.writeInt(score);
-            objectOutputStream.writeInt(maxTile);
-            objectOutputStream.flush();
-
-            message = "Game is saved!";
-
-        } catch (IOException e) {
-
-            message = "Error during saving game...";
-        }
-    }
-
-    public void loadTiles() {
-
-        if (isEmpty()) {
-            message = "There is not saved game...";
-            return;
-        }
-
-        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-
-            gameTiles = (Tile[][]) objectInputStream.readObject();
-            score = objectInputStream.readInt();
-            maxTile = objectInputStream.readInt();
-
-            message = "Game is loaded!";
-
-        } catch (IOException | ClassNotFoundException e) {
-
-            message = "Error during loading game...";
-        }
-    }
-
     private boolean isEmpty() {
         return defaultPathToRecordedGameState.length() == 0;
     }
-
-//    public static void main(String[] args) {
-//        Tile[][] tiles = new Tile[][] {
-//                {new Tile(), new Tile(), new Tile(), new Tile()},
-//                {new Tile(), new Tile(), new Tile(), new Tile()},
-//                {new Tile(), new Tile(), new Tile(), new Tile()},
-//                {new Tile(), new Tile(), new Tile(), new Tile()}
-//        };
-//
-//        Tile[][] copy = getCopyGameTiles(tiles);
-//
-//        copy[0][0] = new Tile(10);
-//
-//        System.out.println(Arrays.deepToString(tiles));
-//        System.out.println(Arrays.deepToString(copy));
-//    }
 }

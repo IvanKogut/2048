@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class Tile implements Drawable, Serializable {
 
+    private static final long serialVersionUID = 2438845260542108250L;
+
     int value;
 
     public Tile() {
