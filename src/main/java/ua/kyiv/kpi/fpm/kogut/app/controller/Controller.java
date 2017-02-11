@@ -56,11 +56,16 @@ public class Controller implements EventListener {
     @Override
     public void saveGame() {
         model.saveTiles();
+        view.update();
     }
 
     @Override
     public void loadGame() {
         model.loadTiles();
         view.update();
+    }
+
+    public String getMessage() {
+        return model.getMessage();
     }
 }

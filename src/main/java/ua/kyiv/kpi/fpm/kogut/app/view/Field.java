@@ -77,6 +77,7 @@ public class Field extends JPanel {
 
         g.setColor(Color.BLACK);
         g.drawString(String.format("Score: %d, High: %d", view.getScore(), view.getMaxTile()), x, y);
+        g.drawString(view.getMessage(), x, y + Model.TILE_LENGTH / 2);
     }
 
     public void setEventListener(EventListener eventListener) {

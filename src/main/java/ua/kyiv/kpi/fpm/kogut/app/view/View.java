@@ -5,6 +5,7 @@ import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Admin on 07.02.2017.
@@ -20,6 +21,7 @@ public class View extends JFrame {
 
     public void init() {
         field = new Field(this);
+        add(new JLabel("S - save; L - load."), BorderLayout.NORTH);
         add(field);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -48,5 +50,9 @@ public class View extends JFrame {
 
     public void update() {
         field.repaint();
+    }
+
+    public String getMessage() {
+        return controller.getMessage();
     }
 }

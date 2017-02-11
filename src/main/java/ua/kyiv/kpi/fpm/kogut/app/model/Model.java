@@ -1,8 +1,6 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,23 +12,26 @@ public class Model {
     public static final int TILE_LENGTH = 50;
     private static final int FIELD_WIDTH = 4;
 
-    //TODO: Create file in the file system and check existing if not create otherwise use
-    private static Path defaultPathToRecordedGameState;
+    private static File defaultPathToRecordedGameState = new File("D:\\Game2048State\\data.gd");
 
     static {
-        try {
-            defaultPathToRecordedGameState = Files.createTempFile("tmp", null);  // tmp.tmp
-        } catch (IOException e) {
-            System.exit(0);
+        if (!defaultPathToRecordedGameState.exists()) {
+            try {
+                defaultPathToRecordedGameState.getParentFile().mkdirs();
+                defaultPathToRecordedGameState.createNewFile();
+            } catch (IOException e) {
+                System.exit(0);
+            }
         }
     }
 
-    private Tile[][] gameTiles;
+    private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
     private int score;
     private int maxTile;
 
-    public Model() {
+    private String message = "";
 
+    public Model() {
         resetGameTiles();
     }
 
@@ -44,6 +45,10 @@ public class Model {
 
     public int getMaxTile() {
         return maxTile;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     private void addTile() {
@@ -67,9 +72,8 @@ public class Model {
     }
 
     private void resetGameTiles() {
-        this.gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
-        this.score = 0;
-        this.maxTile = 2;
+        score = 0;
+        maxTile = 2;
 
         for (int i = 0; i < gameTiles.length; i++) {
             for (int j = 0; j < gameTiles[i].length; j++) {
@@ -79,18 +83,13 @@ public class Model {
 
         addTile();
         addTile();
-//
-//        this.gameTiles = new Tile[][] {
-//                {new Tile(2), new Tile(), new Tile(2), new Tile(4)},
-//                {new Tile(), new Tile(2), new Tile(), new Tile()},
-//                {new Tile(), new Tile(), new Tile(), new Tile()},
-//                {new Tile(), new Tile(), new Tile(16), new Tile()}
-//        };
-
     }
 
     public void left() {
+        message = "";
+
         boolean needAddTile = false;
+
         for (Tile[] tiles : gameTiles) {
             boolean isChangedByCompress = compressTiles(tiles);
             boolean isChangedByMerge = mergeTiles(tiles);
@@ -191,7 +190,7 @@ public class Model {
     }
 
     public void saveTiles() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState.toFile());
+        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
 
             objectOutputStream.writeObject(gameTiles);
@@ -199,21 +198,37 @@ public class Model {
             objectOutputStream.writeInt(maxTile);
             objectOutputStream.flush();
 
+            message = "Game is saved!";
+
         } catch (IOException e) {
-            System.exit(0);
+
+            message = "Error during saving game...";
         }
     }
 
     public void loadTiles() {
-        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState.toFile());
+
+        if (isEmpty()) {
+            message = "There is not saved game...";
+            return;
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
             gameTiles = (Tile[][]) objectInputStream.readObject();
             score = objectInputStream.readInt();
             maxTile = objectInputStream.readInt();
 
+            message = "Game is loaded!";
+
         } catch (IOException | ClassNotFoundException e) {
-            System.exit(0);
+
+            message = "Error during loading game...";
         }
+    }
+
+    private boolean isEmpty() {
+        return defaultPathToRecordedGameState.length() == 0;
     }
 }
