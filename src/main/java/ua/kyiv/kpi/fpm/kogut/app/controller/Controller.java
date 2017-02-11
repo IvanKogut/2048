@@ -19,6 +19,8 @@ public class Controller implements EventListener {
 
         view.init();
         view.setEventListener(this);
+
+        model.setEventListener(this);
     }
 
     public Tile[][] getTiles() {
@@ -54,15 +56,31 @@ public class Controller implements EventListener {
     }
 
     @Override
-    public void saveGame() {
+    public void save() {
         model.saveTiles();
         view.update();
     }
 
     @Override
-    public void loadGame() {
+    public void load() {
         model.loadTiles();
         view.update();
+    }
+
+    @Override
+    public void restart() {
+        model.restart();
+        view.update();
+    }
+
+    @Override
+    public void lose() {
+        view.showMessageDialogOnLose();
+    }
+
+    @Override
+    public void win() {
+        view.showMessageDialogOnWin();
     }
 
     public String getMessage() {

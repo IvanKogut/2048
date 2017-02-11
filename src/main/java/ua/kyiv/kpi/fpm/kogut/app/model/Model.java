@@ -1,5 +1,7 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
+import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,8 @@ public class Model {
         }
     }
 
+    private EventListener eventListener;
+
     private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
     private int score;
     private int maxTile;
@@ -49,6 +53,10 @@ public class Model {
 
     public String getMessage() {
         return message;
+    }
+
+    public void setEventListener(EventListener eventListener) {
+        this.eventListener = eventListener;
     }
 
     private void addTile() {
@@ -85,6 +93,11 @@ public class Model {
         addTile();
     }
 
+    public void restart() {
+        resetGameTiles();
+        message = "Game is restarted!";
+    }
+
     public void left() {
         message = "";
 
@@ -99,9 +112,50 @@ public class Model {
             }
         }
 
+
         if (needAddTile) {
             addTile();
         }
+
+        if (maxTile == 2048) {
+            eventListener.win();
+        }
+
+        if (getEmptyTiles().size() == 0) {
+            checkCompletion();
+        }
+    }
+
+    private void checkCompletion() {
+            // (1,3) - UP; (2,2) - RIGHT; (3, 1) - DOWN; (0,0) - LEFT
+        if (!checkMoveSide(1, 3) && !checkMoveSide(2, 2) && !checkMoveSide(3, 1) && !checkMoveSide(0, 0)) {
+            eventListener.lose();
+        }
+    }
+
+    private boolean checkMoveSide(int timesFirst, int timesSecond) {
+        rotateBy90Anticlockwise(timesFirst);
+        boolean value = tryMergeTiles();
+        rotateBy90Anticlockwise(timesSecond);
+        return value;
+    }
+
+    private boolean tryMergeTiles() {
+        boolean value = false;
+        for (Tile[] tiles : getCopyGameTiles()) {
+            value |= mergeTiles(tiles);
+        }
+        return value;
+    }
+
+    private Tile[][] getCopyGameTiles() {
+        Tile[][] tiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
+        for(int i = 0; i < gameTiles.length; i++) {
+            tiles[i] = new Tile[FIELD_WIDTH];
+            System.arraycopy(gameTiles[i], 0, tiles[i], 0, FIELD_WIDTH);
+        }
+
+        return tiles;
     }
 
     public void up() {
@@ -231,4 +285,20 @@ public class Model {
     private boolean isEmpty() {
         return defaultPathToRecordedGameState.length() == 0;
     }
+
+//    public static void main(String[] args) {
+//        Tile[][] tiles = new Tile[][] {
+//                {new Tile(), new Tile(), new Tile(), new Tile()},
+//                {new Tile(), new Tile(), new Tile(), new Tile()},
+//                {new Tile(), new Tile(), new Tile(), new Tile()},
+//                {new Tile(), new Tile(), new Tile(), new Tile()}
+//        };
+//
+//        Tile[][] copy = getCopyGameTiles(tiles);
+//
+//        copy[0][0] = new Tile(10);
+//
+//        System.out.println(Arrays.deepToString(tiles));
+//        System.out.println(Arrays.deepToString(copy));
+//    }
 }

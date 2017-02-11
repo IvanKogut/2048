@@ -33,10 +33,13 @@ public class Field extends JPanel {
                     eventListener.move(Direction.DOWN);
                     break;
                 case KeyEvent.VK_S:
-                    eventListener.saveGame();
+                    eventListener.save();
                     break;
                 case KeyEvent.VK_L:
-                    eventListener.loadGame();
+                    eventListener.load();
+                    break;
+                case KeyEvent.VK_R:
+                    eventListener.restart();
                     break;
             }
         }

@@ -21,7 +21,7 @@ public class View extends JFrame {
 
     public void init() {
         field = new Field(this);
-        add(new JLabel("S - save; L - load."), BorderLayout.NORTH);
+        add(new JLabel("S - save; L - load; R - restart"), BorderLayout.NORTH);
         add(field);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -54,5 +54,27 @@ public class View extends JFrame {
 
     public String getMessage() {
         return controller.getMessage();
+    }
+
+    public void showMessageDialogOnWin() {
+        EventQueue.invokeLater(() -> {
+            update();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Congratulation",
+                    "You are win!!!",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+
+    public void showMessageDialogOnLose() {
+        EventQueue.invokeLater(() -> {
+            update();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Oops",
+                    "Try again...",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
     }
 }

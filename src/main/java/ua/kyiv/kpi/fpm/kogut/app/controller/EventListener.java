@@ -8,6 +8,9 @@ import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
 public interface EventListener {
 
     void move(Direction direction);
-    void saveGame();
-    void loadGame();
+    void save();
+    void load();
+    void restart();
+    void lose();
+    void win();
 }
