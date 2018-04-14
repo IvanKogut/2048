@@ -1,64 +1,19 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
+import lombok.Data;
+
 import java.awt.*;
 import java.io.Serializable;
 
-//TODO: change serial version uid value
+@Data
 public class Tile implements Drawable, Serializable {
 
     private static final long serialVersionUID = 2438845260542108250L;
 
-    int value;
+    private int value;
 
-    public Tile() {
-        this.value = 0;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return value == 0;
-    }
-
-    public Color getFontColor() {
-        if (value < 16) {
-            return new Color(0x776e65);
-        } else {
-            return new Color(0xf9f6f2);
-        }
-    }
-
-    public Color getTileColor() {
-        switch (value) {
-            case 0:
-                return new Color(0xcdc1b4);
-            case 2:
-                return new Color(0xeee4da);
-            case 4:
-                return new Color(0xede0c8);
-            case 8:
-                return new Color(0xf2b179);
-            case 16:
-                return new Color(0xf59563);
-            case 32:
-                return new Color(0xf67c5f);
-            case 64:
-                return new Color(0xf65e3b);
-            case 128:
-                return new Color(0xedcf72);
-            case 256:
-                return new Color(0xedcc61);
-            case 512:
-                return new Color(0xedc850);
-            case 1024:
-                return new Color(0xedc53f);
-            case 2048:
-                return new Color(0xedc22e);
-            default:
-                return new Color(0xff0000);
-        }
     }
 
     @Override
@@ -69,7 +24,61 @@ public class Tile implements Drawable, Serializable {
         g.fillRect(leftUpperCornerX, leftUpperCornerY, Model.TILE_LENGTH, Model.TILE_LENGTH);
 
         g.setColor(getFontColor());
-        String value = isEmpty() ? "" : "" + getValue();
+
+        final String value = isEmpty() ? "" : String.valueOf(this.value);
+
         g.drawString(value, leftUpperCornerX + Model.TILE_LENGTH / 2, leftUpperCornerY + Model.TILE_LENGTH / 2);
+    }
+
+    private Color getFontColor() {
+        return new Color(value < 16 ? 0x776e65 : 0xf9f6f2);
+    }
+
+    private Color getTileColor() {
+        final int rgb;
+
+        switch (value) {
+            case 0:
+                rgb = 0xcdc1b4;
+                break;
+            case 2:
+                rgb = 0xeee4da;
+                break;
+            case 4:
+                rgb = 0xede0c8;
+                break;
+            case 8:
+                rgb = 0xf2b179;
+                break;
+            case 16:
+                rgb = 0xf59563;
+                break;
+            case 32:
+                rgb = 0xf67c5f;
+                break;
+            case 64:
+                rgb = 0xf65e3b;
+                break;
+            case 128:
+                rgb = 0xedcf72;
+                break;
+            case 256:
+                rgb = 0xedcc61;
+                break;
+            case 512:
+                rgb = 0xedc850;
+                break;
+            case 1024:
+                rgb = 0xedc53f;
+                break;
+            case 2048:
+                rgb = 0xedc22e;
+                break;
+            default:
+                rgb = 0xff0000;
+                break;
+        }
+
+        return new Color(rgb);
     }
 }

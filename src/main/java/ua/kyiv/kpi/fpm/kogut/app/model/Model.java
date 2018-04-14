@@ -100,17 +100,19 @@ public class Model {
     public GameData getGameData() {
         final GameData copiedGameData = new GameData(gameData);
         copiedGameData.setTiles(getCopyGameTiles());
+
         return this.gameData;
     }
 
     private void addTile() {
-        List<Tile> emptyTiles = getEmptyTiles();
-        Tile randomEmptyTile = emptyTiles.get((int) (emptyTiles.size() * Math.random()));
-        randomEmptyTile.value = Math.random() < 0.9 ? 2 : 4;
+        final List<Tile> emptyTiles = getEmptyTiles();
+
+        final Tile randomEmptyTile = emptyTiles.get((int) (emptyTiles.size() * Math.random()));
+        randomEmptyTile.setValue(Math.random() < 0.9 ? 2 : 4);
     }
 
     private List<Tile> getEmptyTiles() {
-        List<Tile> tiles = new ArrayList<>();
+        final List<Tile> tiles = new ArrayList<>();
 
         for (Tile[] tilesRow : gameData.getTiles()) {
             for (Tile tile : tilesRow) {
@@ -148,8 +150,9 @@ public class Model {
 
     private boolean checkMoveSide(int timesFirst, int timesSecond) {
         rotateBy90Anticlockwise(timesFirst);
-        boolean value = tryMergeTiles();
+        final boolean value = tryMergeTiles();
         rotateBy90Anticlockwise(timesSecond);
+
         return value;
     }
 
@@ -188,8 +191,8 @@ public class Model {
                 for (int j = i + 1; j < tiles.length; j++) {
                     if (!tiles[j].isEmpty()) {
                         changedPlayingField = true;
-                        tiles[i].value = tiles[j].value;
-                        tiles[j].value = 0;
+                        tiles[i].setValue(tiles[j].getValue());
+                        tiles[j].setValue(0);
                         break;
                     }
                 }
@@ -225,12 +228,12 @@ public class Model {
         boolean changedPlayingField = false;
 
         for (int i = 0; i < tiles.length - 1 && !tiles[i].isEmpty(); i++) {
-            if (tiles[i].value == tiles[i+1].value) {
+            if (tiles[i].getValue() == tiles[i + 1].getValue()) {
                 changedPlayingField = true;
 
-                int valueTile = tiles[i].value * 2;
-                tiles[i].value = valueTile;
-                tiles[i+1].value = 0;
+                int valueTile = tiles[i].getValue() * 2;
+                tiles[i].setValue(valueTile);
+                tiles[i + 1].setValue(0);
 
                 if (gameData.getMaxTile() < valueTile) {
                     gameData.setMaxTile(valueTile);
