@@ -2,6 +2,7 @@ package ua.kyiv.kpi.fpm.kogut.app.view;
 
 import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
 import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
+import ua.kyiv.kpi.fpm.kogut.app.model.GameData;
 import ua.kyiv.kpi.fpm.kogut.app.model.Model;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 
@@ -50,10 +51,12 @@ class Field extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        final GameData gameData = view.getGameData();
+
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, view.getWidth(), view.getHeight());
 
-        final Tile[][] gameTiles = view.getTiles();
+        final Tile[][] gameTiles = gameData.getTiles();
 
         int x = 0;
         int y = 0;
@@ -72,7 +75,7 @@ class Field extends JPanel {
         y += Model.TILE_LENGTH;
 
         g.setColor(Color.BLACK);
-        g.drawString(String.format("Score: %d, High: %d", view.getScore(), view.getMaxTile()), x, y);
-        g.drawString(view.getMessage(), x, y + Model.TILE_LENGTH / 2);
+        g.drawString(String.format("Score: %d, High: %d", gameData.getScore(), gameData.getMaxTile()), x, y);
+        g.drawString(gameData.getMessage(), x, y + Model.TILE_LENGTH / 2);
     }
 }

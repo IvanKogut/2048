@@ -1,8 +1,8 @@
 package ua.kyiv.kpi.fpm.kogut.app.controller;
 
 import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
+import ua.kyiv.kpi.fpm.kogut.app.model.GameData;
 import ua.kyiv.kpi.fpm.kogut.app.model.Model;
-import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 import ua.kyiv.kpi.fpm.kogut.app.view.View;
 
 public class Controller implements EventListener {
@@ -19,20 +19,8 @@ public class Controller implements EventListener {
         new Controller();
     }
 
-    public Tile[][] getTiles() {
-        return model.getGameTiles();
-    }
-
-    public int getScore() {
-        return model.getScore();
-    }
-
-    public int getMaxTile() {
-        return model.getMaxTile();
-    }
-
-    public String getMessage() {
-        return model.getMessage();
+    public GameData getGameData() {
+        return model.getGameData();
     }
 
     @Override

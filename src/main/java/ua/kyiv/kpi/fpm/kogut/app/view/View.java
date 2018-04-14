@@ -2,7 +2,7 @@ package ua.kyiv.kpi.fpm.kogut.app.view;
 
 import ua.kyiv.kpi.fpm.kogut.app.controller.Controller;
 import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
-import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
+import ua.kyiv.kpi.fpm.kogut.app.model.GameData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,19 +53,7 @@ public class View extends JFrame {
         );
     }
 
-    Tile[][] getTiles() {
-        return controller.getTiles();
-    }
-
-    int getScore() {
-        return controller.getScore();
-    }
-
-    int getMaxTile() {
-        return controller.getMaxTile();
-    }
-
-    String getMessage() {
-        return controller.getMessage();
+    GameData getGameData() {
+        return controller.getGameData();
     }
 }

@@ -9,9 +9,9 @@ import java.util.List;
 public class Model {
 
     public static final int TILE_LENGTH = 50;
-    private static final int FIELD_WIDTH = 4;
+    public static final int FIELD_WIDTH = 4;
 
-    private static File defaultPathToRecordedGameState = new File("D:\\Game2048State\\data.gd");
+    private static final File defaultPathToRecordedGameState = new File("D:\\Game2048State\\data.gd");
 
     static {
         if (!defaultPathToRecordedGameState.exists()) {
@@ -25,17 +25,12 @@ public class Model {
     }
 
     private final EventListener eventListener;
-
+    private final GameData gameData;
     private boolean isNotWin = true;
-
-    private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
-    private int score;
-    private int maxTile;
-
-    private String message = "";
 
     private Model(EventListener eventListener) {
         this.eventListener = eventListener;
+        this.gameData = new GameData();
         resetGameTiles();
     }
 
@@ -43,28 +38,12 @@ public class Model {
         return new Model(eventListener);
     }
 
-    public Tile[][] getGameTiles() {
-        return gameTiles;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public int getMaxTile() {
-        return maxTile;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
     public void left() {
-        message = "";
+        gameData.setMessage("");
 
         boolean needAddTile = false;
 
-        for (Tile[] tiles : gameTiles) {
+        for (Tile[] tiles : gameData.getTiles()) {
             boolean isChangedByCompress = compressTiles(tiles);
             boolean isChangedByMerge = mergeTiles(tiles);
 
@@ -73,12 +52,11 @@ public class Model {
             }
         }
 
-
         if (needAddTile) {
             addTile();
         }
 
-        if (maxTile == 2048 && isNotWin) {
+        if (gameData.getMaxTile() == 2048 && isNotWin) {
             eventListener.onWin();
             isNotWin = false;
         }
@@ -107,35 +85,38 @@ public class Model {
     }
 
     public void saveTiles() {
+
+        String message;
         try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
 
-            objectOutputStream.writeObject(gameTiles);
-            objectOutputStream.writeInt(score);
-            objectOutputStream.writeInt(maxTile);
+            objectOutputStream.writeObject(gameData.getTiles());
+            objectOutputStream.writeInt(gameData.getScore());
+            objectOutputStream.writeInt(gameData.getMaxTile());
             objectOutputStream.flush();
 
             message = "Game is saved!";
-
         } catch (IOException e) {
-
             message = "Error during saving game...";
         }
+
+        gameData.setMessage(message);
     }
 
     public void loadTiles() {
 
-        if (isEmpty()) {
-            message = "There is not saved game...";
+        if (!savedGameExists()) {
+            gameData.setMessage("There is not saved game...");
             return;
         }
 
+        String message;
         try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
-            gameTiles = (Tile[][]) objectInputStream.readObject();
-            score = objectInputStream.readInt();
-            maxTile = objectInputStream.readInt();
+            gameData.setTiles((Tile[][]) objectInputStream.readObject());
+            gameData.setScore(objectInputStream.readInt());
+            gameData.setMaxTile(objectInputStream.readInt());
 
             message = "Game is loaded!";
 
@@ -143,11 +124,19 @@ public class Model {
 
             message = "Error during loading game...";
         }
+
+        gameData.setMessage(message);
     }
 
     public void restart() {
         resetGameTiles();
-        message = "Game is restarted!";
+        gameData.setMessage("Game is restarted!");
+    }
+
+    public GameData getGameData() {
+        final GameData copiedGameData = new GameData(gameData);
+        copiedGameData.setTiles(getCopyGameTiles());
+        return this.gameData;
     }
 
     private void addTile() {
@@ -159,7 +148,7 @@ public class Model {
     private List<Tile> getEmptyTiles() {
         List<Tile> tiles = new ArrayList<>();
 
-        for (Tile[] tilesRow : gameTiles) {
+        for (Tile[] tilesRow : gameData.getTiles()) {
             for (Tile tile : tilesRow) {
                 if (tile.isEmpty()) {
                     tiles.add(tile);
@@ -171,8 +160,10 @@ public class Model {
     }
 
     private void resetGameTiles() {
-        score = 0;
-        maxTile = 2;
+        gameData.setScore(0);
+        gameData.setMaxTile(2);
+
+        final Tile[][] gameTiles = gameData.getTiles();
 
         for (int i = 0; i < gameTiles.length; i++) {
             for (int j = 0; j < gameTiles[i].length; j++) {
@@ -207,13 +198,15 @@ public class Model {
     }
 
     private Tile[][] getCopyGameTiles() {
-        Tile[][] tiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
+        final Tile[][] copiedTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
+        final Tile[][] gameTiles = gameData.getTiles();
+
         for(int i = 0; i < gameTiles.length; i++) {
-            tiles[i] = new Tile[FIELD_WIDTH];
-            System.arraycopy(gameTiles[i], 0, tiles[i], 0, FIELD_WIDTH);
+            copiedTiles[i] = new Tile[FIELD_WIDTH];
+            System.arraycopy(gameTiles[i], 0, copiedTiles[i], 0, FIELD_WIDTH);
         }
 
-        return tiles;
+        return copiedTiles;
     }
 
     private void rotateBy90Anticlockwise(int times) {
@@ -243,6 +236,8 @@ public class Model {
     }
 
     private void transposeTiles() {
+        final Tile[][] gameTiles = gameData.getTiles();
+
         for(int i = 0; i < gameTiles.length; i++) {
             for(int j = i+1; j < gameTiles[i].length; j++) {
                 Tile temp = gameTiles[i][j];
@@ -253,6 +248,8 @@ public class Model {
     }
 
     private void reverseRows() {
+        final Tile[][] gameTiles = gameData.getTiles();
+
         for(int i = 0; i < gameTiles.length / 2; i++) {
             Tile[] temp = gameTiles[i];
             gameTiles[i] = gameTiles[gameTiles.length - i - 1];
@@ -271,11 +268,11 @@ public class Model {
                 tiles[i].value = valueTile;
                 tiles[i+1].value = 0;
 
-                if (maxTile < valueTile) {
-                    maxTile = valueTile;
+                if (gameData.getMaxTile() < valueTile) {
+                    gameData.setMaxTile(valueTile);
                 }
 
-                score += valueTile;
+                gameData.setScore(gameData.getScore() + valueTile);
                 compressTiles(tiles);
             }
         }
@@ -283,7 +280,7 @@ public class Model {
         return changedPlayingField;
     }
 
-    private boolean isEmpty() {
-        return defaultPathToRecordedGameState.length() == 0;
+    private boolean savedGameExists() {
+        return defaultPathToRecordedGameState.length() != 0;
     }
 }

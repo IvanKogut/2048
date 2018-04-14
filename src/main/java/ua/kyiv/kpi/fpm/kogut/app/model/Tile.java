@@ -3,6 +3,7 @@ package ua.kyiv.kpi.fpm.kogut.app.model;
 import java.awt.*;
 import java.io.Serializable;
 
+//TODO: change serial version uid value
 public class Tile implements Drawable, Serializable {
 
     private static final long serialVersionUID = 2438845260542108250L;
