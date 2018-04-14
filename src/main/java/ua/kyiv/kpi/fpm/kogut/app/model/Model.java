@@ -2,7 +2,6 @@ package ua.kyiv.kpi.fpm.kogut.app.model;
 
 import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,26 +10,17 @@ public class Model {
     public static final int TILE_LENGTH = 50;
     public static final int FIELD_WIDTH = 4;
 
-    private static final File defaultPathToRecordedGameState = new File("D:\\Game2048State\\data.gd");
-
-    static {
-        if (!defaultPathToRecordedGameState.exists()) {
-            try {
-                defaultPathToRecordedGameState.getParentFile().mkdirs();
-                defaultPathToRecordedGameState.createNewFile();
-            } catch (IOException e) {
-                System.exit(0);
-            }
-        }
-    }
-
     private final EventListener eventListener;
+    private final GameLoader gameLoader;
     private final GameData gameData;
+
     private boolean isNotWin = true;
 
     private Model(EventListener eventListener) {
         this.eventListener = eventListener;
+        this.gameLoader = GameLoader.create("D:\\Game2048State\\data.gd");
         this.gameData = new GameData();
+
         resetGameTiles();
     }
 
@@ -84,48 +74,22 @@ public class Model {
         rotateBy90Anticlockwise(1);
     }
 
-    public void saveTiles() {
-
-        String message;
-        try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPathToRecordedGameState);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-
-            objectOutputStream.writeObject(gameData.getTiles());
-            objectOutputStream.writeInt(gameData.getScore());
-            objectOutputStream.writeInt(gameData.getMaxTile());
-            objectOutputStream.flush();
-
-            message = "Game is saved!";
-        } catch (IOException e) {
-            message = "Error during saving game...";
-        }
-
-        gameData.setMessage(message);
+    public void saveGame() {
+        gameLoader.saveGameData(gameData);
     }
 
-    public void loadTiles() {
+    public void loadGame() {
+        try {
+            final GameData loadedGame = gameLoader.loadGameData();
 
-        if (!savedGameExists()) {
-            gameData.setMessage("There is not saved game...");
-            return;
+            gameData.setTiles(loadedGame.getTiles());
+            gameData.setScore(loadedGame.getScore());
+            gameData.setMaxTile(loadedGame.getMaxTile());
+            gameData.setMessage(loadedGame.getMessage());
+
+        } catch (Exception e) {
+            gameData.setMessage(e.getMessage());
         }
-
-        String message;
-        try (FileInputStream fileInputStream = new FileInputStream(defaultPathToRecordedGameState);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-
-            gameData.setTiles((Tile[][]) objectInputStream.readObject());
-            gameData.setScore(objectInputStream.readInt());
-            gameData.setMaxTile(objectInputStream.readInt());
-
-            message = "Game is loaded!";
-
-        } catch (IOException | ClassNotFoundException e) {
-
-            message = "Error during loading game...";
-        }
-
-        gameData.setMessage(message);
     }
 
     public void restart() {
@@ -278,9 +242,5 @@ public class Model {
         }
 
         return changedPlayingField;
-    }
-
-    private boolean savedGameExists() {
-        return defaultPathToRecordedGameState.length() != 0;
     }
 }

@@ -45,13 +45,13 @@ public class Controller implements EventListener {
 
     @Override
     public void onSave() {
-        model.saveTiles();
+        model.saveGame();
         view.update();
     }
 
     @Override
     public void onLoad() {
-        model.loadTiles();
+        model.loadGame();
         view.update();
     }
 
