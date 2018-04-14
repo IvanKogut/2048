@@ -6,9 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Admin on 07.02.2017.
- */
 public class Model {
 
     public static final int TILE_LENGTH = 50;
@@ -27,7 +24,8 @@ public class Model {
         }
     }
 
-    private EventListener eventListener;
+    private final EventListener eventListener;
+
     private boolean isNotWin = true;
 
     private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
@@ -36,8 +34,13 @@ public class Model {
 
     private String message = "";
 
-    public Model() {
+    private Model(EventListener eventListener) {
+        this.eventListener = eventListener;
         resetGameTiles();
+    }
+
+    public static Model init(EventListener eventListener) {
+        return new Model(eventListener);
     }
 
     public Tile[][] getGameTiles() {
@@ -54,10 +57,6 @@ public class Model {
 
     public String getMessage() {
         return message;
-    }
-
-    public void setEventListener(EventListener eventListener) {
-        this.eventListener = eventListener;
     }
 
     public void left() {

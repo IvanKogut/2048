@@ -7,20 +7,15 @@ import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Admin on 07.02.2017.
- */
 public class View extends JFrame {
 
-    private Controller controller;
-    private Field field;
+    private final Controller controller;
+    private final Field field;
 
-    public View(Controller controller) {
+    private View(Controller controller, EventListener eventListener) {
         this.controller = controller;
-    }
+        this.field = new Field(this, eventListener);
 
-    public void init() {
-        field = new Field(this);
         add(new JLabel("S - save; L - load; R - restart"), BorderLayout.NORTH);
         add(field);
 
@@ -30,6 +25,10 @@ public class View extends JFrame {
         setLocationRelativeTo(null);
         setTitle("2048");
         setVisible(true);
+    }
+
+    public static View init(Controller controller, EventListener eventListener) {
+        return new View(controller, eventListener);
     }
 
     public Tile[][] getTiles() {
@@ -42,10 +41,6 @@ public class View extends JFrame {
 
     public int getMaxTile() {
         return controller.getMaxTile();
-    }
-
-    public void setEventListener(EventListener eventListener) {
-        field.setEventListener(eventListener);
     }
 
     public void update() {

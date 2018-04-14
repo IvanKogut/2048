@@ -3,9 +3,6 @@ package ua.kyiv.kpi.fpm.kogut.app.model;
 import java.awt.*;
 import java.io.Serializable;
 
-/**
- * Created by Admin on 08.02.2017.
- */
 public class Tile implements Drawable, Serializable {
 
     private static final long serialVersionUID = 2438845260542108250L;
@@ -14,10 +11,6 @@ public class Tile implements Drawable, Serializable {
 
     public Tile() {
         this.value = 0;
-    }
-
-    public Tile(int value) {
-        this.value = value;
     }
 
     public int getValue() {

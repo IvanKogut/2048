@@ -1,7 +1,7 @@
 package ua.kyiv.kpi.fpm.kogut.app.view;
 
-import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
 import ua.kyiv.kpi.fpm.kogut.app.controller.EventListener;
+import ua.kyiv.kpi.fpm.kogut.app.model.Direction;
 import ua.kyiv.kpi.fpm.kogut.app.model.Model;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 
@@ -10,48 +10,17 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-/**
- * Created by Admin on 09.02.2017.
- */
-public class Field extends JPanel {
+class Field extends JPanel {
 
-    public class KeyHandler extends KeyAdapter {
+    private final View view;
+    private final EventListener eventListener;
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
-                    eventListener.onMove(Direction.LEFT);
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    eventListener.onMove(Direction.RIGHT);
-                    break;
-                case KeyEvent.VK_UP:
-                    eventListener.onMove(Direction.UP);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    eventListener.onMove(Direction.DOWN);
-                    break;
-                case KeyEvent.VK_S:
-                    eventListener.onSave();
-                    break;
-                case KeyEvent.VK_L:
-                    eventListener.onLoad();
-                    break;
-                case KeyEvent.VK_R:
-                    eventListener.onRestart();
-                    break;
-            }
-        }
-    }
-
-    private View view;
-    private EventListener eventListener;
-
-    public Field(View view) {
+    Field(View view, EventListener eventListener) {
         this.view = view;
+        this.eventListener = eventListener;
+
         addKeyListener(new KeyHandler());
-        this.setFocusable(true);
+        setFocusable(true);
     }
 
     @Override
@@ -83,7 +52,33 @@ public class Field extends JPanel {
         g.drawString(view.getMessage(), x, y + Model.TILE_LENGTH / 2);
     }
 
-    public void setEventListener(EventListener eventListener) {
-        this.eventListener = eventListener;
+    private class KeyHandler extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    eventListener.onMove(Direction.LEFT);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    eventListener.onMove(Direction.RIGHT);
+                    break;
+                case KeyEvent.VK_UP:
+                    eventListener.onMove(Direction.UP);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    eventListener.onMove(Direction.DOWN);
+                    break;
+                case KeyEvent.VK_S:
+                    eventListener.onSave();
+                    break;
+                case KeyEvent.VK_L:
+                    eventListener.onLoad();
+                    break;
+                case KeyEvent.VK_R:
+                    eventListener.onRestart();
+                    break;
+            }
+        }
     }
 }
