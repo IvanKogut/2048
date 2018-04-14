@@ -16,6 +16,14 @@ public class View extends JFrame {
         this.controller = controller;
         this.field = new Field(this, eventListener);
 
+        showMainGameFrame();
+    }
+
+    public static View init(Controller controller, EventListener eventListener) {
+        return new View(controller, eventListener);
+    }
+
+    private void showMainGameFrame() {
         add(new JLabel("S - save; L - load; R - restart"), BorderLayout.NORTH);
         add(field);
 
@@ -27,49 +35,38 @@ public class View extends JFrame {
         setVisible(true);
     }
 
-    public static View init(Controller controller, EventListener eventListener) {
-        return new View(controller, eventListener);
-    }
-
-    public Tile[][] getTiles() {
-        return controller.getTiles();
-    }
-
-    public int getScore() {
-        return controller.getScore();
-    }
-
-    public int getMaxTile() {
-        return controller.getMaxTile();
-    }
-
     public void update() {
         field.repaint();
     }
 
-    public String getMessage() {
-        return controller.getMessage();
+    public void showMessageDialogOnLose() {
+        putMessageToEventQueue("Try again...", "Oops");
     }
 
     public void showMessageDialogOnWin() {
+        putMessageToEventQueue("You are win!!!", "Congratulation");
+    }
+
+    private void putMessageToEventQueue(final String message, final String title) {
         EventQueue.invokeLater(() -> {
             update();
-            JOptionPane.showMessageDialog(
-                    this,
-                    "You are win!!!",
-                    "Congratulation",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
         });
     }
 
-    public void showMessageDialogOnLose() {
-        EventQueue.invokeLater(() -> {
-            update();
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Try again...",
-                    "Oops",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
+    Tile[][] getTiles() {
+        return controller.getTiles();
+    }
+
+    int getScore() {
+        return controller.getScore();
+    }
+
+    int getMaxTile() {
+        return controller.getMaxTile();
+    }
+
+    String getMessage() {
+        return controller.getMessage();
     }
 }
