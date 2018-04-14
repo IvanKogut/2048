@@ -5,15 +5,12 @@ import ua.kyiv.kpi.fpm.kogut.app.model.Model;
 import ua.kyiv.kpi.fpm.kogut.app.model.Tile;
 import ua.kyiv.kpi.fpm.kogut.app.view.View;
 
-/**
- * Created by Admin on 07.02.2017.
- */
 public class Controller implements EventListener {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
-    public Controller() {
+    private Controller() {
         this.model = new Model();
         this.view = new View(this);
 
@@ -21,6 +18,10 @@ public class Controller implements EventListener {
         view.setEventListener(this);
 
         model.setEventListener(this);
+    }
+
+    public static void start() {
+        new Controller();
     }
 
     public Tile[][] getTiles() {
