@@ -13,13 +13,38 @@ import java.awt.event.KeyEvent;
 class Field extends JPanel {
 
     private final View view;
-    private final EventListener eventListener;
 
     Field(View view, EventListener eventListener) {
         this.view = view;
-        this.eventListener = eventListener;
 
-        addKeyListener(new KeyHandler());
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        eventListener.onMove(Direction.LEFT);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        eventListener.onMove(Direction.RIGHT);
+                        break;
+                    case KeyEvent.VK_UP:
+                        eventListener.onMove(Direction.UP);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        eventListener.onMove(Direction.DOWN);
+                        break;
+                    case KeyEvent.VK_S:
+                        eventListener.onSave();
+                        break;
+                    case KeyEvent.VK_L:
+                        eventListener.onLoad();
+                        break;
+                    case KeyEvent.VK_R:
+                        eventListener.onRestart();
+                        break;
+                }
+            }
+        });
         setFocusable(true);
     }
 
@@ -28,8 +53,7 @@ class Field extends JPanel {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, view.getWidth(), view.getHeight());
 
-
-        Tile[][] gameTiles = view.getTiles();
+        final Tile[][] gameTiles = view.getTiles();
 
         int x = 0;
         int y = 0;
@@ -50,35 +74,5 @@ class Field extends JPanel {
         g.setColor(Color.BLACK);
         g.drawString(String.format("Score: %d, High: %d", view.getScore(), view.getMaxTile()), x, y);
         g.drawString(view.getMessage(), x, y + Model.TILE_LENGTH / 2);
-    }
-
-    private class KeyHandler extends KeyAdapter {
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
-                    eventListener.onMove(Direction.LEFT);
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    eventListener.onMove(Direction.RIGHT);
-                    break;
-                case KeyEvent.VK_UP:
-                    eventListener.onMove(Direction.UP);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    eventListener.onMove(Direction.DOWN);
-                    break;
-                case KeyEvent.VK_S:
-                    eventListener.onSave();
-                    break;
-                case KeyEvent.VK_L:
-                    eventListener.onLoad();
-                    break;
-                case KeyEvent.VK_R:
-                    eventListener.onRestart();
-                    break;
-            }
-        }
     }
 }
