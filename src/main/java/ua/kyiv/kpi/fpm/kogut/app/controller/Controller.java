@@ -31,6 +31,10 @@ public class Controller implements EventListener {
         return model.getMaxTile();
     }
 
+    public String getMessage() {
+        return model.getMessage();
+    }
+
     @Override
     public void onMove(Direction direction) {
         switch (direction) {
@@ -71,15 +75,13 @@ public class Controller implements EventListener {
 
     @Override
     public void onLose() {
+        view.update();
         view.showMessageDialogOnLose();
     }
 
     @Override
     public void onWin() {
+        view.update();
         view.showMessageDialogOnWin();
-    }
-
-    public String getMessage() {
-        return model.getMessage();
     }
 }

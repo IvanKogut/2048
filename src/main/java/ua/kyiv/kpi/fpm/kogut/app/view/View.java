@@ -48,10 +48,9 @@ public class View extends JFrame {
     }
 
     private void putMessageToEventQueue(final String message, final String title) {
-        EventQueue.invokeLater(() -> {
-            update();
-            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
-        });
+        EventQueue.invokeLater(
+                () -> JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE)
+        );
     }
 
     Tile[][] getTiles() {
