@@ -1,18 +1,19 @@
 package ua.kyiv.kpi.fpm.kogut.app.model;
 
 import java.io.*;
+import java.nio.file.Paths;
 
 class GameLoader {
 
     private final File recordedGameStateFile;
 
-    private GameLoader(String savedGameFilePath) {
-        this.recordedGameStateFile = new File(savedGameFilePath);
+    private GameLoader() {
+        this.recordedGameStateFile = Paths.get(".").toAbsolutePath().resolve("data.gd").normalize().toFile();
         createDirectoryWithSavedGame();
     }
 
-    static GameLoader create(final String savedGameFilePath) {
-        return new GameLoader(savedGameFilePath);
+    static GameLoader create() {
+        return new GameLoader();
     }
 
     void saveGameData(final GameData gameData) {
@@ -63,7 +64,6 @@ class GameLoader {
     private void createDirectoryWithSavedGame() {
         if (!recordedGameStateFile.exists()) {
             try {
-                recordedGameStateFile.getParentFile().mkdirs();
                 recordedGameStateFile.createNewFile();
             } catch (IOException e) {
                 System.exit(0);

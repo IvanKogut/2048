@@ -18,7 +18,7 @@ public class Model {
 
     private Model(EventListener eventListener) {
         this.eventListener = eventListener;
-        this.gameLoader = GameLoader.create("D:\\Game2048State\\data.gd");
+        this.gameLoader = GameLoader.create();
         this.gameData = new GameData();
 
         resetGameTiles();
